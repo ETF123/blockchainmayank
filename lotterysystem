@@ -2,43 +2,45 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
-contract Lottery{
+contract LotterySystem{
 
-  address public manager;
-  address payable[] public players;
+  address public owner;
+  address payable[] public Participants;
 
   constructor(){
-    manager = msg.sender;
+    owner = msg.sender;
   }
 
-  function alreadyEntered() view private returns(bool){
-    for(uint i=0;i<players.length;i++){
-      if(players[i]==msg.sender)
+
+function Participants_List() public view returns (address payable[] memory){ 
+    return Participants;
+  }
+function checkIfAlreadyExist() view private returns(bool){
+    for(uint i=0;i<Participants.length;i++){
+      if(Participants[i]==msg.sender)
         return true;
     }
     return false;
   }
 
-  function enter() payable public{
-    require(msg.sender != manager, "Manager cannot enter"); 
-    require(alreadyEntered() == false, "Player already entered");
+function Participate() payable public{
+    require(msg.sender != owner, "Owner cannot participate"); 
+    require(checkIfAlreadyExist() == false, "Player already entered");
     require(msg.value >= 1 ether, "Minimum amount must be payed");
-    players.push(payable(msg.sender));
+    Participants.push(payable(msg.sender));
   }
 
- function random() view private returns(uint){
-    return uint(sha256(abi.encodePacked(block.basefee, block.number, players)));
+function winnergenerator() view private returns(uint){
+    return uint(sha256(abi.encodePacked(block.basefee, block.number, Participants)));
 }
 
-  function pickWinner() public{
-    require(msg.sender == manager, "Only manager can pick the winner");
-    uint index = random()%players.length;//winner index
+function Announce_Winner() public{
+    require(msg.sender == owner, "Only Owner can pick the winner");
+    uint index = winnergenerator()%Participants.length;//winner index
     address contractAddress = address(this);
-    players[index].transfer(contractAddress.balance);
-    players = new address payable[](0);
+    Participants[index].transfer(contractAddress.balance);
+    Participants = new address payable[](0);
   }
 
-  function getPlayers() public view returns (address payable[] memory){ 
-    return players;
-  }
+
 }
