@@ -26,7 +26,7 @@ function checkIfAlreadyExist() view private returns(bool){
 function Participate() payable public{
     require(msg.sender != owner, "Owner cannot participate"); 
     require(checkIfAlreadyExist() == false, "Player already entered");
-    require(msg.value >= 1 ether, "Minimum amount must be payed");
+    require(msg.value == 1 ether, "Minimum amount must be payed");
     Participants.push(payable(msg.sender));
   }
 
