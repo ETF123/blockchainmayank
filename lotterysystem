@@ -1,3 +1,4 @@
+
 // SPDX-License-Identifier: GPL-3.0
 
 pragma solidity >=0.7.0 <0.9.0;
@@ -11,12 +12,7 @@ contract LotterySystem{
     owner = msg.sender;
   }
 
- function Entry_Fee() pure public returns (string memory)  
-   { 
-     string memory text;
-     text = "Entry Fee : 1 Ether"; 
-     return text; 
-   }
+
 function Participants_List() public view returns (address payable[] memory){ 
     return Participants;
   }
@@ -28,15 +24,10 @@ function checkIfAlreadyExist() view private returns(bool){
     return false;
   }
 
- 
-
-
-
 function Participate() payable public{
-    
     require(msg.sender != owner, "Owner cannot participate"); 
     require(checkIfAlreadyExist() == false, "Player already entered");
-    require(msg.value == 1 ether, "Minimum amount must be payed");
+    require(msg.value >= 1 ether, "Minimum amount must be payed");
     Participants.push(payable(msg.sender));
   }
 
@@ -54,4 +45,3 @@ function Announce_Winner() public{
 
 
 }
-      
